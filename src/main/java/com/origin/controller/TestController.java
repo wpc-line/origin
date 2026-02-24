@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/test")
 public class TestController {
 
     @Resource
@@ -17,20 +16,25 @@ public class TestController {
 
     @GetMapping("/hello")
     public String test(){
-        return "hello word";
-    }
+        String key = "hello_key";
+        // 1. 先查缓存
+        String result = (String)redisTemplate.opsForValue().get(key);
 
-    @GetMapping("/redis-test")
-    public String redistTest() {
-        // 先查缓存，没有再查数据库（这里用字符串模拟）
-        String cache = (String)redisTemplate.opsForValue().get("hello_key");
-        if (cache != null) {
-            return "缓存返回：" + cache;
+        // 2. 缓存穿透防护：缓存空值
+        if (result == null) {
+            // 查数据库（模拟真实业务）
+            String dbResult = "Hello Redis!";
+
+            // 3. 缓存加过期时间（300秒=5分钟，避免数据永久有效）
+            if (dbResult == null) {
+                // 空值也缓存，设置短一点的过期时间（60秒）
+                redisTemplate.opsForValue().set(key, "", 60, TimeUnit.SECONDS);
+            } else {
+                // 正常数据缓存，设置5分钟过期
+                redisTemplate.opsForValue().set(key, dbResult, 300, TimeUnit.SECONDS);
+            }
+            result = dbResult;
         }
-        // 模拟数据库查询
-        String result = "Hello Architecture!";
-        // 存入缓存，过期时间10分钟
-        redisTemplate.opsForValue().set("hello_key", result, 10, TimeUnit.MINUTES);
-        return "数据库返回：" + result;
+        return result;
     }
 }
