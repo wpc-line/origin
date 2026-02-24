@@ -8,9 +8,9 @@
         <version>3.5.12-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>org.wpc</groupId>
     <artifactId>origin</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1</version>
     <name>origin</name>
     <description>origin</description>
     <url/>
