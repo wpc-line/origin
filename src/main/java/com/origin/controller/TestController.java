@@ -1,5 +1,6 @@
 package com.origin.controller;
 
+import com.origin.utils.MonitorUtils;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,28 +14,21 @@ public class TestController {
 
     @Resource
     private RedisTemplate redisTemplate;
+    @Resource
+    private MonitorUtils monitorUtils;
 
     @GetMapping("/hello")
     public String test(){
-        String key = "hello_key";
-        // 1. 先查缓存
-        String result = (String)redisTemplate.opsForValue().get(key);
-
-        // 2. 缓存穿透防护：缓存空值
-        if (result == null) {
-            // 查数据库（模拟真实业务）
-            String dbResult = "Hello Redis!";
-
-            // 3. 缓存加过期时间（300秒=5分钟，避免数据永久有效）
-            if (dbResult == null) {
-                // 空值也缓存，设置短一点的过期时间（60秒）
-                redisTemplate.opsForValue().set(key, "", 60, TimeUnit.SECONDS);
-            } else {
-                // 正常数据缓存，设置5分钟过期
-                redisTemplate.opsForValue().set(key, dbResult, 300, TimeUnit.SECONDS);
-            }
-            result = dbResult;
+        String apiName = "/hello";
+        try {
+            // 埋点：记录接口访问
+            monitorUtils.recordApiVisit(apiName);
+            // 空项目基础返回（后续可替换为业务逻辑）
+            return "Hello Origin! (空项目已加监控埋点)";
+        } catch (Exception e) {
+            // 埋点：记录接口异常
+            monitorUtils.recordApiError(apiName, e.getMessage());
+            return "接口异常：" + e.getMessage();
         }
-        return result;
     }
 }

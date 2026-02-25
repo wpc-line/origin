@@ -6,3 +6,8 @@ spring:
       host: 39.102.137.98
       port: 6379
       database: 0
+logging:
+  level:
+    com.origin: INFO
+  file:
+    path: ./logs
