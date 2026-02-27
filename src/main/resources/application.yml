@@ -6,8 +6,31 @@ spring:
       host: 39.102.137.98
       port: 6379
       database: 0
+  datasource:
+    # 1. 驱动类（MySQL 8.x 用这个）
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 2. 连接URL（替换：服务器IP、数据库名）
+    url: jdbc:mysql://39.102.137.98:3306/origin_project?
+      useUnicode=true&characterEncoding=utf8&
+      useSSL=false&serverTimezone=Asia/Shanghai&
+      allowPublicKeyRetrieval=true&
+      rewriteBatchedStatements=true
+    # 3. 数据库账号密码
+    username: root
+    password: 123456
 logging:
   level:
-    com.origin: INFO
+    org.wpc: INFO
+    org.wpc.mapper: DEBUG
   file:
     path: ./logs
+
+# MyBatis-Plus 增强配置（可选，但建议加上）
+mybatis-plus:
+  # 下划线转驼峰（默认开启，可显式配置）
+  configuration:
+    map-underscore-to-camel-case: true
+    # 打印SQL日志（开发阶段调试用，生产可关闭）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # Mapper接口扫描（如果启动类没加@MapperScan，这里必须配）
+  mapper-locations: classpath:mapper/**/*.xml

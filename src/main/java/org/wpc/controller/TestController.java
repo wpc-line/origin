@@ -1,15 +1,11 @@
-package com.origin.controller;
+package org.wpc.controller;
 
-import com.origin.utils.MonitorUtils;
-import com.origin.utils.RedisCacheGuardUtils;
+import org.wpc.utils.MonitorUtils;
+import org.wpc.utils.RedisCacheGuardUtils;
 import jakarta.annotation.Resource;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.TimeUnit;
 
 @RestController
 public class TestController {

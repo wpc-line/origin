@@ -1,4 +1,4 @@
-package com.origin.utils;
+package org.wpc.utils;
 
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
